@@ -4,29 +4,42 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {seq l {space :::p, comp label1:::p::p, space ::569:x, comp btnTurnBck:::p::p, space :::p}, seq l {space :p:81:p, comp label2:::p::p, space s:::p, comp txtSearch:::p:182:p, space ::382:x}}"
-			"$verticalGroup": "par l {seq l {space :::p, par b {comp label1::b:p::p, comp btnTurnBck::b:p::p}, space :::p, par b {comp label2::b:p::p, comp txtSearch::b:p::p}, space ::396:x}}"
+			"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l {comp label1:::p:281:p, comp btnArchive::l:p:90:p}, space :p:342:p, comp lblName:::p:239:p, space ::15:x}, seq {par l {comp label2:::p:124:p, comp txtCustomerSearch::l:p:281:p}, space :0:596:x}, comp scrollPane1::l::877:x}}}"
+			"$verticalGroup": "par l {seq {par l {seq l {comp label1:::p::p, space :::p, comp btnArchive:::p:70:p, space :::x, comp label2:::p::p, space u:::p, comp txtCustomerSearch:::p::p, space :p:10:p}, seq {space :0:0:x, comp lblName:::p:42:p, space :p:154:p}}, space :::x, comp scrollPane1:::p:463:p, space :::x}}"
 		} ) {
 			name: "this"
+			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosing", "thisWindowClosing", true ) )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label1"
 				"text": "Archive"
-			} )
-			add( new FormComponent( "javax.swing.JButton" ) {
-				name: "btnTurnBck"
-				"icon": new com.jformdesigner.model.SwingIcon( 0, "/dashboardIcon.png" )
-				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnTurnBck", true ) )
+				"font": new java.awt.Font( "Segoe UI", 1, 20 )
+				"foreground": sfield java.awt.Color blue
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label2"
-				"text": "Search"
+				"text": "Customer Search"
+				"font": new java.awt.Font( "Times New Roman", 1, 16 )
 			} )
 			add( new FormComponent( "javax.swing.JTextField" ) {
-				name: "txtSearch"
+				name: "txtCustomerSearch"
+			} )
+			add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+				name: "scrollPane1"
+				add( new FormComponent( "javax.swing.JTable" ) {
+					name: "tblArchive"
+				} )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "lblName"
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "btnArchive"
+				"icon": new com.jformdesigner.model.SwingIcon( 0, "/archiveIcon.png" )
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "btnArchiveClick", true ) )
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 700, 500 )
+			"size": new java.awt.Dimension( 885, 655 )
 		} )
 	}
 }

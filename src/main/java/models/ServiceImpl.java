@@ -1,8 +1,8 @@
 package models;
 
-import props.Customer;
-import props.Service;
-import utils.DB;
+import Utils.DB;
+import prop.Customer;
+import prop.Service;
 
 import javax.swing.table.DefaultTableModel;
 import java.sql.PreparedStatement;
@@ -16,17 +16,21 @@ public class ServiceImpl implements IService {
     DB db = new DB();
     List<Customer> ls = new ArrayList<>();
     List<Customer> lsSearch = new ArrayList<>();
+    List<Service> lsService = new ArrayList<>();
+    List<Service> lsSearchService = new ArrayList<>();
     public ServiceImpl(){
         ls = serviceCustomerList();
         lsSearch = ls;
+        lsService = serviceList();
+        lsSearchService = lsService;
     }
 
     @Override
     public List<Customer> serviceCustomerList() {
-        List<Customer> customerList = new ArrayList<>();//list
+        List<Customer> customerList = new ArrayList<>();
         try
         {
-            String sql = "select * from customer order by cid desc";//sql
+            String sql = "select * from customer order by cid desc";
             PreparedStatement pre=db.connect().prepareStatement(sql);
             ResultSet rs=pre.executeQuery();
             while(rs.next())
@@ -54,6 +58,7 @@ public class ServiceImpl implements IService {
 
     @Override
     public DefaultTableModel serviceCustomerTable(String data) {
+
         ls = lsSearch;
         DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Cid");
@@ -63,10 +68,10 @@ public class ServiceImpl implements IService {
         model.addColumn("Phone");
         model.addColumn("Address");
 
-        if ( data != null && !data.equals("") ) {//int veya stringe
-            data = data.toLowerCase();
+        if ( data != null && !data.equals("") ) {
             // arama sonuçlarını gönder
-            List<Customer> subLs =  new ArrayList<>();
+            data = data.toLowerCase(Locale.ROOT);
+            List<Customer> subLs = new ArrayList<>();
             for (Customer item:ls){
                 if (item.getName().toLowerCase(Locale.ROOT).contains(data)
                         || item.getSurname().toLowerCase(Locale.ROOT).contains(data)
@@ -89,105 +94,176 @@ public class ServiceImpl implements IService {
     }
 
     @Override
-    public List<Service> serviceList() {
-        try {
-            String sql="select * from service where sid desc";
-            PreparedStatement pre= db.connect().prepareStatement(sql);
-            ResultSet rs= pre.executeQuery();
+    public DefaultTableModel serviceUpdateDeleteTable(String data) {
+        lsService=lsSearchService;
+        List<Service> list= new ArrayList<>();
+        DefaultTableModel tableModel=new DefaultTableModel();
 
-            serviceList().clear();
-            while (rs.next()){
-            int sid= rs.getInt("sid");
-            int cid= rs.getInt("cid");
-            String title= rs.getString("title");
-            String info= rs.getString("info");
-            int days= rs.getInt("days");
-            String date= rs.getString("date");
-            int status= rs.getInt("status");
-            int price= rs.getInt("price");
-
-            Service service = new Service(sid,cid,title,info,days,date,status,price);
-
-            serviceList().add(service);
-
+        tableModel.addColumn("Service No");
+        tableModel.addColumn("Customer No");
+        tableModel.addColumn("Name");
+        tableModel.addColumn("Surname");
+        tableModel.addColumn("Title");
+        tableModel.addColumn("Info");
+        tableModel.addColumn("Days");
+        tableModel.addColumn("Date");
+        tableModel.addColumn("Status");
+        tableModel.addColumn("Price");
+        list=serviceList();
+        if (data != null && !data.equals("")) {//arama sonuclarını gonder
+            List<Service> subLs = new ArrayList<>();
+            for (Service item : lsService) {
+                if (item.getTitle().toLowerCase(Locale.ROOT).contains(data)
+                        || item.getInfo().toLowerCase(Locale.ROOT).contains(data)) {
+                    subLs.add(item);
+                }
+            }
+            lsService = subLs;
+        }
+        for (Service item: list){
+            String state="";
+            if (item.getStatus()==0){
+                state= "Product Just Arrived";
+            }else if (item.getStatus()==1){
+                state="Product In Repair";
+            }else if (item.getStatus()==2){
+                state="Product Has Been Repaired";
+            }else {
+                state="Product Delivered";
             }
 
-        }catch (Exception ex){
-            System.out.println("service list error"+ ex);
-            ex.printStackTrace();
-        }finally {
+            Object[] row={item.getSid(),item.getCid(),item.getCustomer().getName(),item.getCustomer().getSurname(),
+                    item.getTitle(),item.getInfo(),item.getDays(),item.getDate(),state,item.getPrice()};
+            tableModel.addRow(row);
+        }
+
+        return tableModel;
+    }
+
+
+    @Override
+    public List<Service> serviceList() {
+        List<Service> ls=new ArrayList<>();
+            try {
+                String sql="SELECT sid,s.cid,name,surname,title,info,days,date,status,price from service s "+
+                        "JOIN customer c on s.cid=c.cid ORDER BY sid DESC";
+                PreparedStatement pre=db.connect().prepareStatement(sql);
+                ResultSet rs=pre.executeQuery();
+                while (rs.next()){
+                    int sid=rs.getInt("sid");
+                    int cid=rs.getInt("cid");
+                    String name=rs.getString("name");
+                    String surname=rs.getString("surname");
+                    String title=rs.getString("title");
+                    String info= rs.getString("info");
+                    int days=rs.getInt("days");
+                    String date=rs.getString("date");
+                    int status=rs.getInt("status");
+                    int price=rs.getInt("price");
+                    Customer customerS=new Customer(cid,name,surname);
+                    Service serviceS=new Service(sid,cid,title,info,days,date,status,price,customerS);
+
+                    ls.add(serviceS);
+
+                }
+
+            }catch (Exception ex){
+                System.err.println("serviceList Error:"+ex);
+            }finally {
+                db.close();
+            }
+            return ls;
+        }
+
+    @Override
+    public List<Service> archiveServiceList() {
+        List<Service> ls=new ArrayList<>();
+        try{
+            String sql="select * from service where status = 4 ORDER BY sid desc ";
+            PreparedStatement pre = db.connect().prepareStatement(sql);
+            ResultSet rs= pre.executeQuery();
+            while (rs.next()){//rs.next() son elemana kadar bakar.
+                int sid=rs.getInt("sid");
+                int cid=rs.getInt("cid");
+                String info=rs.getString("info");
+                String title=rs.getString("title");
+                int days=rs.getInt("days");
+                String date=rs.getString("date");
+                int status=rs.getInt("status");
+                int price=rs.getInt("price");
+                Service s=new Service(sid,cid,title,info,days,date,status,price);
+                ls.add(s);
+            }
+        }catch (Exception e){
+            System.out.println("serviceList Error : "+e);
+        }
+        finally {
             db.close();
         }
-        return serviceList();
+        return ls;
     }
 
     @Override
     public int serviceInsert(Service service) {
         int status=0;
-        try {
-            String sql="INSERT INTO service values(null,?,?,?,?,?,?)";
-            PreparedStatement pre= db.connect().prepareStatement(sql);
+        try{
+            String sql="insert into service values(null,?,?,?,?,?,?,?)";
+            PreparedStatement pre = db.connect().prepareStatement(sql);
             pre.setInt(1,service.getCid());
             pre.setString(2,service.getTitle());
-            pre.setString(3,service.getInfo());
+            pre.setString(3,service.getInfo());//veritabanına gondereceğimiz değer bir string ise setString kullanmamı gerekir
             pre.setInt(4,service.getDays());
             pre.setString(5,service.getDate());
             pre.setInt(6,service.getStatus());
-
-            status=pre.executeUpdate();// güncelleme her veri girişinde
-        }catch (Exception ex){
-            System.out.println("insert error"+ ex);
-            ex.printStackTrace();
-        }finally {
+            pre.setInt(7,service.getPrice());
+            status = pre.executeUpdate();
+        }catch (Exception e){
+            System.out.println("serviceInsert Error : "+e);
+        }
+        finally {
             db.close();
         }
-
-
         return status;
     }
 
     @Override
-    public int serviceDelete(int cid) {
-        int status=0;
-        try {
-            String sql="delete from service where cid=?";
-            PreparedStatement pre= db.connect().prepareStatement(sql);
-            pre.setInt(1,cid);
-            status= pre.executeUpdate();
+    public int serviceDelete(int sid){
 
-        }catch (Exception ex){
-            System.out.println("delete error"+ ex);
-            ex.printStackTrace();
+        int status = 0;
+        try {
+            String sql = "delete from Service where sid = ?;";
+            PreparedStatement pre = db.connect().prepareStatement(sql);
+            pre.setInt(1, sid);
+            status = pre.executeUpdate();
+        }catch (Exception ex) {
+            System.err.println("serviceDelete " +ex);
         }finally {
             db.close();
         }
-
         return status;
     }
 
     @Override
     public int serviceUpdate(Service service) {
-        int status=0;
+
+        int status = 0;
         try {
-            String sql="update service set sid=?, cid=?,title=?,info=?,days=?,date=?,status=?";
-            PreparedStatement pre= db.connect().prepareStatement(sql);
-            pre.setInt(1,service.getSid());
-            pre.setInt(2,service.getCid());
-            pre.setString(3,service.getTitle());
-            pre.setString(4,service.getInfo());
-            pre.setInt(5,service.getDays());
-            pre.setString(6,service.getDate());
-            pre.setInt(7,service.getStatus());
-
-            status=pre.executeUpdate();
-
-        }catch (Exception ex){
-            System.out.println("update error"+ex);
-        }finally {
+            String sql = " update service SET cid= ?,title=?, info = ?,days =?, date =?, status =?, price =? where sid=?";
+            PreparedStatement pre = db.connect().prepareStatement(sql);
+            pre.setInt(1, service.getCid());
+            pre.setString(2, service.getTitle());
+            pre.setString(3, service.getInfo());
+            pre.setInt(4, service.getDays());
+            pre.setString(5, service.getDate());
+            pre.setInt(6, service.getStatus());
+            pre.setInt(7, service.getPrice());
+            pre.setInt(8, service.getSid());
+            status = pre.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("serviceUpdate Error : " + e);
+        } finally {
             db.close();
         }
-        return 0;
+        return status;
     }
-
-
 }

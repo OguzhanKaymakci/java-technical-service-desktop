@@ -1,13 +1,14 @@
 /*
- * Created by JFormDesigner on Thu Apr 07 15:41:51 TRT 2022
+ * Created by JFormDesigner on Thu May 05 12:06:32 TRT 2022
  */
 
 package views;
 
+import Utils.Util;
 import models.CustomerImpl;
 import models.UserImpl;
-import props.Customer;
-import utils.Util;
+import prop.Customer;
+import prop.User;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -18,18 +19,60 @@ import javax.swing.GroupLayout;
  * @author unknown
  */
 public class CustomerAdd extends Base {
-
-    CustomerImpl cus = new CustomerImpl();
-
-    int row=0;
-    int status=0;
-    int val;
-
+    CustomerImpl customerImpl = new CustomerImpl();
+    int row=-1;
+    int selectId = 0;
     public CustomerAdd() {
         initComponents();
-        lblName.setText( "Sn." + UserImpl.name );
+        lblName.setText("Welcome " + UserImpl.name);
+        tblCustomer.setModel(customerImpl.customerTablemodel());
     }
 
+    private void btnCustomerAddClick(ActionEvent e) {
+
+        Customer c = fncDataValid();
+        if (c != null ) {
+            int status = customerImpl.customerInsert(c);
+            if (status >0) {
+                tblCustomer.setModel(customerImpl.customerTablemodel());
+                lblError.setText("Added customer success !");
+                txtName.setText("");
+                txtSurname.setText("");
+                txtEmail.setText("");
+                txtPhone.setText("");
+                txtAddress.setText("");
+
+            }else  {
+                if (status == -1) {
+                    lblError.setText("E-Mail or Phone have already used");
+                }else {
+                    lblError.setText("Insert Error");
+                }
+            }
+        }
+
+    }
+
+    private void thisWindowClosing(WindowEvent e) {
+        new DashBoard().setVisible(true);
+    }
+    public void rowValue(){
+        int column = 0;
+        row = tblCustomer.getSelectedRow();
+        selectId = (int) tblCustomer.getValueAt(row, column);
+        String cid= String.valueOf(tblCustomer.getValueAt(row,0));
+        String name= String.valueOf(tblCustomer.getValueAt(row,1));
+        String surname= String.valueOf(tblCustomer.getValueAt(row,2));
+        String email= String.valueOf(tblCustomer.getValueAt(row,3));
+        String phone= String.valueOf(tblCustomer.getValueAt(row,4));
+        String address= String.valueOf(tblCustomer.getValueAt(row,5));
+
+        txtName.setText(name);
+        txtSurname.setText(surname);
+        txtEmail.setText(email);
+        txtPhone.setText(phone);
+        txtAddress.setText(address);
+    }
     private Customer fncDataValid() {
 
         String name=txtName.getText().trim();
@@ -59,47 +102,50 @@ public class CustomerAdd extends Base {
             txtAddress.requestFocus();//imleç otomatik olarak passwworde gelicek
         }else {
             lblError.setText("");
-            Customer c = new Customer(0,name, surname, email, phone, address);
+            Customer c = new Customer(0,name,surname,email,phone,address);
             return c;
         }
-        return null; //olumsuz halinde
+        return null;
     }
 
+    private void btnDeleteClick(ActionEvent e) {
+        if (row !=-1){
+            int answer=JOptionPane.showConfirmDialog(this,"Are you sure you want to delete the customer?","Delete Window",JOptionPane.YES_OPTION);//parent component nerede görüneceği this button
 
-    private void thisWindowClosing(WindowEvent e) {
-        new Dashboard().setVisible(true);
-    }
-
-    private void btnCustomerAdd(ActionEvent e) {
-        Customer c = fncDataValid();
-        if ( c != null ) {
-            int status = cus.customerInsert(c);
-            if ( status > 0) {
-                System.out.println("Ekleme Başarılı");
-            }else {
-                if ( status == -1 ) {
-                    lblError.setText("E-Mail or Phone have already used");
-                }else {
-                    lblError.setText("Insert Error");
-                }
+            if (answer==0){
+                customerImpl.CustomerDelete(selectId);
+                tblCustomer.setModel(customerImpl.customerTablemodel()); //tabloyu refresh et
+                txtName.setText("");
+                txtSurname.setText("");
+                txtEmail.setText("");
+                txtPhone.setText("");
+                txtAddress.setText("");
+                row=-1;
             }
         }
 
+        else{
+            JOptionPane.showMessageDialog(this,"Please choose.");
+        }
     }
 
-    private void btnUpdateCliskAction(ActionEvent e) {
-        String name= txtName.getText();
-        String surname=txtSurname.getText();
-        String email = txtEmail.getText();
-        String phone = txtPhone.getText();
-        String address = txtAddress.getText();
+    private void btnUpdateClick(ActionEvent e) {
 
-        Customer customer = new Customer(0,name, surname,email,phone,address);
+        String name= txtName.getText();
+        String surname= txtSurname.getText();
+        String email= txtEmail.getText();
+        String phone= txtPhone.getText();
+        String address= txtAddress.getText();
+
+        Customer customer= new Customer(selectId,name,surname,email,phone,address);
+        //carsModel.add(c);
         if (row!=-1){
-            int answer=JOptionPane.showConfirmDialog(this,"Are you sure for update ?","Update Process",JOptionPane.YES_OPTION);
+            int answer=JOptionPane.showConfirmDialog(this,"Are you sure you want to update the customer?","Update Window",JOptionPane.YES_OPTION);//parent component nerede görüneceği this button
+
             if (answer==0){
-                cus.customerUpdate(customer);
-                table1.setModel(cus.customerTable()); //tabloyu refresh et
+                customerImpl.customerUpdate(customer);
+                tblCustomer.setModel(customerImpl.customerTablemodel()); //tabloyu refresh et
+//                System.out.println(row+" update");
                 txtName.setText("");
                 txtSurname.setText("");
                 txtEmail.setText("");
@@ -108,58 +154,45 @@ public class CustomerAdd extends Base {
                 row=-1;
 
             }
-            }else {JOptionPane.showMessageDialog(this,"Please Make Your Choice."); //this kendini burada ortala
-            //show confirm anlaşmayı kabul etmek istiyor musun.
-
         }
+        else{
+            JOptionPane.showMessageDialog(this,"Please choose.");
         }
+    }
 
-        private void btnDeleteClick(ActionEvent e) {
-            if(row !=-1){
-                int answer =JOptionPane.showConfirmDialog(this,"Are you sure you want to delete the customer?","delete Window",JOptionPane.YES_NO_OPTION);
-                System.out.println(answer);
+    private void tblCustomerKeyReleased(KeyEvent e) {
+        rowValue();
+    }
 
-                if (answer==0){
-                    cus.customerDelete(val);
-                    table1.setModel(cus.customerTable());//refresh
-                    txtName.setText("");
-                    txtSurname.setText("");
-                    txtEmail.setText("");
-                    txtPhone.setText("");
-                    txtAddress.setText("");
-                    row=-1;
-                }
-
-            }else {JOptionPane.showMessageDialog(this,"Please Choose");}
-        }
-
+    private void tblCustomerMouseClicked(MouseEvent e) {
+        rowValue();
+    }
 
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        panel1 = new JPanel();
+        button1 = new JButton();
         label1 = new JLabel();
-        lblName = new JLabel();
         label2 = new JLabel();
-        txtName = new JTextField();
-        label3 = new JLabel();
-        txtSurname = new JTextField();
         label4 = new JLabel();
-        txtEmail = new JTextField();
-        label5 = new JLabel();
-        txtPhone = new JTextField();
         label6 = new JLabel();
-        scrollPane1 = new JScrollPane();
-        txtAddress = new JTextArea();
-        btnAdd = new JButton();
-        scrollPane2 = new JScrollPane();
-        table1 = new JTable();
-        btnDelete = new JButton();
+        label5 = new JLabel();
+        label3 = new JLabel();
+        txtName = new JTextField();
+        txtEmail = new JTextField();
+        txtSurname = new JTextField();
+        txtPhone = new JTextField();
+        txtAddress = new JTextField();
+        btnCustomerAdd = new JButton();
         btnUpdate = new JButton();
+        btnDelete = new JButton();
         lblError = new JLabel();
+        lblName = new JLabel();
+        scrollPane1 = new JScrollPane();
+        tblCustomer = new JTable();
 
         //======== this ========
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setResizable(false);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -168,57 +201,173 @@ public class CustomerAdd extends Base {
         });
         Container contentPane = getContentPane();
 
-        //---- label1 ----
-        label1.setText("Technical Service");
-        label1.setFont(new Font("Arial", Font.PLAIN, 16));
+        //======== panel1 ========
+        {
 
-        //---- lblName ----
-        lblName.setText(" ");
-        lblName.setHorizontalAlignment(SwingConstants.TRAILING);
+            //---- button1 ----
+            button1.setIcon(new ImageIcon(getClass().getResource("/addIcon2.png")));
 
-        //---- label2 ----
-        label2.setText("Name");
+            //---- label1 ----
+            label1.setText("Customer Managment");
+            label1.setFont(new Font("Segoe UI", Font.BOLD, 18));
+            label1.setForeground(Color.blue);
 
-        //---- label3 ----
-        label3.setText("Surname");
+            //---- label2 ----
+            label2.setText("Name");
+            label2.setFont(label2.getFont().deriveFont(label2.getFont().getSize() + 2f));
 
-        //---- label4 ----
-        label4.setText("E-mail");
+            //---- label4 ----
+            label4.setText("E-mail");
+            label4.setFont(label4.getFont().deriveFont(label4.getFont().getSize() + 2f));
 
-        //---- label5 ----
-        label5.setText("Phone");
+            //---- label6 ----
+            label6.setText("Addres");
+            label6.setFont(label6.getFont().deriveFont(label6.getFont().getSize() + 2f));
 
-        //---- label6 ----
-        label6.setText("Address");
+            //---- label5 ----
+            label5.setText("Phone");
+            label5.setFont(label5.getFont().deriveFont(label5.getFont().getSize() + 2f));
+
+            //---- label3 ----
+            label3.setText("Surname");
+            label3.setFont(label3.getFont().deriveFont(label3.getFont().getSize() + 2f));
+
+            //---- btnCustomerAdd ----
+            btnCustomerAdd.setIcon(new ImageIcon(getClass().getResource("/\u0131conAddCusIcon.png")));
+            btnCustomerAdd.setText("ADD");
+            btnCustomerAdd.setFont(btnCustomerAdd.getFont().deriveFont(btnCustomerAdd.getFont().getStyle() | Font.BOLD, btnCustomerAdd.getFont().getSize() + 6f));
+            btnCustomerAdd.addActionListener(e -> btnCustomerAddClick(e));
+
+            //---- btnUpdate ----
+            btnUpdate.setIcon(new ImageIcon(getClass().getResource("/updateCusIcon.png")));
+            btnUpdate.setText("UPDATE");
+            btnUpdate.setFont(btnUpdate.getFont().deriveFont(btnUpdate.getFont().getStyle() | Font.BOLD, btnUpdate.getFont().getSize() + 6f));
+            btnUpdate.addActionListener(e -> btnUpdateClick(e));
+
+            //---- btnDelete ----
+            btnDelete.setIcon(new ImageIcon(getClass().getResource("/deleteIcon.png")));
+            btnDelete.setText("DELETE");
+            btnDelete.setFont(btnDelete.getFont().deriveFont(btnDelete.getFont().getStyle() | Font.BOLD, btnDelete.getFont().getSize() + 6f));
+            btnDelete.addActionListener(e -> btnDeleteClick(e));
+
+            GroupLayout panel1Layout = new GroupLayout(panel1);
+            panel1.setLayout(panel1Layout);
+            panel1Layout.setHorizontalGroup(
+                panel1Layout.createParallelGroup()
+                    .addGroup(panel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panel1Layout.createParallelGroup()
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addGroup(panel1Layout.createParallelGroup()
+                                    .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                                        .addGroup(panel1Layout.createParallelGroup()
+                                            .addGroup(panel1Layout.createSequentialGroup()
+                                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
+                                                    .addGroup(GroupLayout.Alignment.LEADING, panel1Layout.createSequentialGroup()
+                                                        .addComponent(label2, GroupLayout.PREFERRED_SIZE, 66, GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(18, 18, 18)
+                                                        .addComponent(txtName, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE))
+                                                    .addGroup(GroupLayout.Alignment.LEADING, panel1Layout.createSequentialGroup()
+                                                        .addComponent(label4, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                        .addComponent(txtEmail, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)))
+                                                .addGap(149, 149, 149)
+                                                .addGroup(panel1Layout.createParallelGroup()
+                                                    .addComponent(label3, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(label5, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addGroup(panel1Layout.createParallelGroup()
+                                                    .addComponent(txtSurname, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE))
+                                                .addGap(0, 0, Short.MAX_VALUE))
+                                            .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                                                .addComponent(label6, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(txtAddress)))
+                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(lblError, GroupLayout.PREFERRED_SIZE, 202, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addComponent(button1, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(btnCustomerAdd, GroupLayout.PREFERRED_SIZE, 190, GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, 190, GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnDelete, GroupLayout.PREFERRED_SIZE, 190, GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(label1, GroupLayout.PREFERRED_SIZE, 199, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblName, GroupLayout.PREFERRED_SIZE, 189, GroupLayout.PREFERRED_SIZE)
+                        .addGap(79, 79, 79))
+            );
+            panel1Layout.setVerticalGroup(
+                panel1Layout.createParallelGroup()
+                    .addGroup(panel1Layout.createSequentialGroup()
+                        .addComponent(lblName, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addGap(235, 235, 235)
+                                .addComponent(lblError, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 66, Short.MAX_VALUE))
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addComponent(label1, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(button1, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                                .addGroup(panel1Layout.createParallelGroup()
+                                    .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(label2, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtSurname, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(label3, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)))
+                                .addGap(11, 11, 11)
+                                .addGroup(panel1Layout.createParallelGroup()
+                                    .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                        .addComponent(label4, GroupLayout.PREFERRED_SIZE, 34, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panel1Layout.createSequentialGroup()
+                                        .addGap(8, 8, 8)
+                                        .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                            .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(label5, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(label6, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtAddress, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGap(15, 15, 15)
+                                .addGroup(panel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnCustomerAdd, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnDelete, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap())))
+            );
+        }
 
         //======== scrollPane1 ========
         {
-            scrollPane1.setViewportView(txtAddress);
+
+            //---- tblCustomer ----
+            tblCustomer.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    tblCustomerKeyReleased(e);
+                }
+            });
+            tblCustomer.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    tblCustomerMouseClicked(e);
+                }
+            });
+            scrollPane1.setViewportView(tblCustomer);
         }
-
-        //---- btnAdd ----
-        btnAdd.setIcon(new ImageIcon(getClass().getResource("/addIconCus.png")));
-        btnAdd.setToolTipText("Customer Add");
-        btnAdd.addActionListener(e -> btnCustomerAdd(e));
-
-        //======== scrollPane2 ========
-        {
-            scrollPane2.setViewportView(table1);
-        }
-
-        //---- btnDelete ----
-        btnDelete.setIcon(new ImageIcon(getClass().getResource("/deleteIconCus.png")));
-        btnDelete.setToolTipText("Customer Delete");
-        btnDelete.addActionListener(e -> btnDeleteClick(e));
-
-        //---- btnUpdate ----
-        btnUpdate.setIcon(new ImageIcon(getClass().getResource("/updateIconCus.png")));
-        btnUpdate.setToolTipText("Customer Update");
-        btnUpdate.addActionListener(e -> btnUpdateCliskAction(e));
-
-        //---- lblError ----
-        lblError.setText(" ");
-        lblError.setForeground(new Color(244, 92, 92));
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
@@ -227,92 +376,18 @@ public class CustomerAdd extends Base {
                 .addGroup(contentPaneLayout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(contentPaneLayout.createParallelGroup()
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                .addComponent(label1, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
-                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                    .addGap(12, 12, 12)
-                                    .addComponent(label2)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtName, GroupLayout.PREFERRED_SIZE, 259, GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(contentPaneLayout.createParallelGroup()
-                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                    .addGap(30, 30, 30)
-                                    .addComponent(lblName, GroupLayout.PREFERRED_SIZE, 326, GroupLayout.PREFERRED_SIZE)
-                                    .addGap(0, 0, Short.MAX_VALUE))
-                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(label3)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtSurname, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE))))
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                .addComponent(label6)
-                                .addComponent(label4))
-                            .addGap(18, 18, 18)
-                            .addGroup(contentPaneLayout.createParallelGroup()
-                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                    .addComponent(btnAdd, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnDelete, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE))
-                                .addComponent(scrollPane1)
-                                .addGroup(contentPaneLayout.createSequentialGroup()
-                                    .addComponent(txtEmail, GroupLayout.PREFERRED_SIZE, 253, GroupLayout.PREFERRED_SIZE)
-                                    .addGap(38, 38, 38)
-                                    .addComponent(label5)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, 271, GroupLayout.PREFERRED_SIZE)
-                                    .addGap(0, 0, Short.MAX_VALUE))
-                                .addComponent(lblError, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addComponent(scrollPane2))
+                        .addComponent(panel1, GroupLayout.DEFAULT_SIZE, 871, Short.MAX_VALUE)
+                        .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 871, Short.MAX_VALUE))
                     .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()
                 .addGroup(contentPaneLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addGap(2, 2, 2)
-                            .addComponent(label1))
-                        .addComponent(lblName, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(label2)
-                            .addComponent(txtName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtSurname, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(label3)))
-                    .addGap(18, 18, 18)
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(txtPhone, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addGap(7, 7, 7)
-                            .addComponent(label5))
-                        .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(label4)
-                            .addComponent(txtEmail, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                    .addGap(18, 18, 18)
-                    .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(label6)
-                        .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblError)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                    .addGroup(contentPaneLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addComponent(btnUpdate)
-                            .addGap(241, 241, 241))
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addGroup(contentPaneLayout.createParallelGroup()
-                                .addComponent(btnAdd)
-                                .addComponent(btnDelete))
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(scrollPane2, GroupLayout.PREFERRED_SIZE, 217, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())))
+                    .addComponent(panel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 202, GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap())
         );
         pack();
         setLocationRelativeTo(getOwner());
@@ -320,24 +395,25 @@ public class CustomerAdd extends Base {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    private JPanel panel1;
+    private JButton button1;
     private JLabel label1;
-    private JLabel lblName;
     private JLabel label2;
-    private JTextField txtName;
-    private JLabel label3;
-    private JTextField txtSurname;
     private JLabel label4;
-    private JTextField txtEmail;
-    private JLabel label5;
-    private JTextField txtPhone;
     private JLabel label6;
-    private JScrollPane scrollPane1;
-    private JTextArea txtAddress;
-    private JButton btnAdd;
-    private JScrollPane scrollPane2;
-    private JTable table1;
-    private JButton btnDelete;
+    private JLabel label5;
+    private JLabel label3;
+    private JTextField txtName;
+    private JTextField txtEmail;
+    private JTextField txtSurname;
+    private JTextField txtPhone;
+    private JTextField txtAddress;
+    private JButton btnCustomerAdd;
     private JButton btnUpdate;
+    private JButton btnDelete;
     private JLabel lblError;
+    private JLabel lblName;
+    private JScrollPane scrollPane1;
+    private JTable tblCustomer;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

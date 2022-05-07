@@ -1,36 +1,43 @@
 /*
- * Created by JFormDesigner on Wed Apr 06 18:22:20 TRT 2022
+ * Created by JFormDesigner on Thu May 05 11:43:36 TRT 2022
  */
 
 package views;
 
-import java.awt.event.*;
+import models.CustomerServiceImpl;
 import models.UserImpl;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 
 /**
  * @author unknown
  */
-public class Dashboard extends Base {
-
-
-    public Dashboard() {
+public class DashBoard extends Base {
+    CustomerServiceImpl customerServiceImplFirst= new CustomerServiceImpl(2);
+    CustomerServiceImpl customerServiceImplReady=new CustomerServiceImpl(3);
+    public static void main(String[] args) {
+        new DashBoard().setVisible(true);
+    }
+    public DashBoard() {
         initComponents();
-        lblName.setText( "Sn." + UserImpl.name );
+        lblName.setText("Welcome " + UserImpl.name);
+        tblNotComplieted.setModel(customerServiceImplFirst.serviceCustomerTable(null));
+        tblComplieted.setModel(customerServiceImplReady.serviceCustomerTable(null));
+
     }
 
-    private void btnAddCustomerClick(ActionEvent e) {
+    private void btnCustomer(ActionEvent e) {
         CustomerAdd customerAdd = new CustomerAdd();
         customerAdd.setVisible(true);
         dispose();
     }
 
-    private void addServiceClick(ActionEvent e) {
-        Services services = new Services();
-        services.setVisible(true);
+    private void btnServiceClick(ActionEvent e) {
+        Serrvices serrvices = new Serrvices();
+        serrvices.setVisible(true);
         dispose();
     }
 
@@ -40,61 +47,59 @@ public class Dashboard extends Base {
         dispose();
     }
 
-
-
-
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        lblName = new JLabel();
         label1 = new JLabel();
-        button1 = new JButton();
-        button2 = new JButton();
+        btnCustomer = new JButton();
+        btnService = new JButton();
         btnArchive = new JButton();
+        label3 = new JLabel();
         scrollPane1 = new JScrollPane();
-        table1 = new JTable();
+        tblNotComplieted = new JTable();
         scrollPane2 = new JScrollPane();
-        table2 = new JTable();
-        textField1 = new JTextField();
+        tblComplieted = new JTable();
+        lblName = new JLabel();
 
         //======== this ========
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         Container contentPane = getContentPane();
 
-        //---- lblName ----
-        lblName.setText(" ");
-        lblName.setHorizontalAlignment(SwingConstants.TRAILING);
-
         //---- label1 ----
-        label1.setText("Technical Service");
-        label1.setFont(new Font("Arial", Font.PLAIN, 16));
+        label1.setText("Technical Service ");
+        label1.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        label1.setForeground(Color.blue);
 
-        //---- button1 ----
-        button1.setIcon(new ImageIcon(getClass().getResource("/user_add_icon.png")));
-        button1.setToolTipText("Customer Add");
-        button1.setFocusable(false);
-        button1.addActionListener(e -> btnAddCustomerClick(e));
+        //---- btnCustomer ----
+        btnCustomer.setIcon(new ImageIcon(getClass().getResource("/addIcon2.png")));
+        btnCustomer.addActionListener(e -> btnCustomer(e));
 
-        //---- button2 ----
-        button2.setIcon(new ImageIcon(getClass().getResource("/service_add_icon.png")));
-        button2.setToolTipText("Services Add");
-        button2.setFocusable(false);
-        button2.addActionListener(e -> addServiceClick(e));
+        //---- btnService ----
+        btnService.setIcon(new ImageIcon(getClass().getResource("/tecnicIcon.png")));
+        btnService.addActionListener(e -> btnServiceClick(e));
 
         //---- btnArchive ----
-        btnArchive.setIcon(new ImageIcon(getClass().getResource("/archive_add_icon.png")));
-        btnArchive.setToolTipText("Archive");
-        btnArchive.setFocusable(false);
+        btnArchive.setIcon(new ImageIcon(getClass().getResource("/archiveIcon.png")));
         btnArchive.addActionListener(e -> btnArchiveClick(e));
+
+        //---- label3 ----
+        label3.setText("Work in Progress");
+        label3.setFont(new Font("Segoe UI Black", Font.PLAIN, 16));
+        label3.setForeground(new Color(153, 204, 255));
 
         //======== scrollPane1 ========
         {
-            scrollPane1.setViewportView(table1);
+            scrollPane1.setViewportView(tblNotComplieted);
         }
 
         //======== scrollPane2 ========
         {
-            scrollPane2.setViewportView(table2);
+            scrollPane2.setViewportView(tblComplieted);
         }
+
+        //---- lblName ----
+        lblName.setText(" ");
+        lblName.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 14));
+        lblName.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblName.setForeground(new Color(33, 17, 17));
 
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
@@ -103,20 +108,22 @@ public class Dashboard extends Base {
                 .addGroup(contentPaneLayout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(contentPaneLayout.createParallelGroup()
+                        .addComponent(scrollPane1)
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addComponent(label1, GroupLayout.PREFERRED_SIZE, 330, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                            .addComponent(lblName, GroupLayout.PREFERRED_SIZE, 326, GroupLayout.PREFERRED_SIZE))
+                            .addGroup(contentPaneLayout.createParallelGroup()
+                                .addGroup(contentPaneLayout.createSequentialGroup()
+                                    .addComponent(btnCustomer, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(btnService, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(btnArchive, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(label3, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE))
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(scrollPane2)
                         .addGroup(contentPaneLayout.createSequentialGroup()
-                            .addComponent(button1)
-                            .addGap(18, 18, 18)
-                            .addComponent(button2)
-                            .addGap(18, 18, 18)
-                            .addComponent(btnArchive)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
-                            .addComponent(textField1, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE))
-                        .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE)
-                        .addComponent(scrollPane1, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE))
+                            .addComponent(label1, GroupLayout.PREFERRED_SIZE, 634, GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblName, GroupLayout.PREFERRED_SIZE, 218, GroupLayout.PREFERRED_SIZE)))
                     .addContainerGap())
         );
         contentPaneLayout.setVerticalGroup(
@@ -128,14 +135,15 @@ public class Dashboard extends Base {
                         .addComponent(lblName, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
                     .addGap(18, 18, 18)
                     .addGroup(contentPaneLayout.createParallelGroup()
-                        .addComponent(button1, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(button2, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnArchive, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(textField1, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnCustomer, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnService, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnArchive, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE))
                     .addGap(18, 18, 18)
-                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 146, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                    .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                    .addComponent(label3)
+                    .addGap(18, 18, 18)
+                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 165, GroupLayout.PREFERRED_SIZE)
+                    .addGap(18, 18, 18)
+                    .addComponent(scrollPane2, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
                     .addContainerGap())
         );
         pack();
@@ -144,15 +152,15 @@ public class Dashboard extends Base {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    private JLabel lblName;
     private JLabel label1;
-    private JButton button1;
-    private JButton button2;
+    private JButton btnCustomer;
+    private JButton btnService;
     private JButton btnArchive;
+    private JLabel label3;
     private JScrollPane scrollPane1;
-    private JTable table1;
+    private JTable tblNotComplieted;
     private JScrollPane scrollPane2;
-    private JTable table2;
-    private JTextField textField1;
+    private JTable tblComplieted;
+    private JLabel lblName;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

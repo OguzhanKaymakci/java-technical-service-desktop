@@ -1,21 +1,20 @@
 package models;
 
-import props.Customer;
-import props.Service;
+import prop.Customer;
+import prop.Service;
+
 
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public interface IService {
-
-    List<Customer> serviceCustomerList(); //ok
-    DefaultTableModel serviceCustomerTable( String data );
-
-    // ödev
+    int serviceInsert(Service service);
+    int serviceDelete(int sid);
+    int serviceUpdate (Service service);
+    DefaultTableModel serviceCustomerTable(String data);
+    DefaultTableModel serviceUpdateDeleteTable(String data);
+    List<Customer> serviceCustomerList();
     List<Service> serviceList();
-    int serviceInsert( Service service );
-    int serviceDelete( int cid );
-    int serviceUpdate( Service service );
-
+    List<Service> archiveServiceList();
 
 }

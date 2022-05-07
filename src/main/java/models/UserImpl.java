@@ -1,63 +1,38 @@
 package models;
 
-import props.User;
-import utils.DB;
-import utils.Util;
+import Utils.DB;
+
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
-public class UserImpl implements IUser {
 
-    DB db = new DB();
+public class UserImpl implements IUser{
+
     public static String name = "";
     public static int uid = 0;
-
-    @Override
-    public int userUpdate(User user) {
-        int status = 0;
-        try {
-            String sql = "update user set name = ?, surname = ?, email = ?, password = ? where uid = ?";
-            PreparedStatement pre = db.connect().prepareStatement(sql);
-            pre.setString(1, user.getName());
-            pre.setString(2, user.getSurname());
-            pre.setString(3, user.getEmail());
-            pre.setString(4, Util.MD5(user.getPassword()));
-            pre.setInt(5, user.getUid());
-            status = pre.executeUpdate();
-        }catch (Exception ex) {
-            System.err.println("userUpdate Error : " + ex);
-        }
-        return status;
-    }
-
-
+    DB db= new DB();
 
     @Override
     public boolean userLogin(String email, String password) {
-        boolean status = false;
+        boolean status= false;
         try {
-            String sql = "select * from user where email = ? and password = ?";
+            String sql="select * from user where email=? and password=?";
             PreparedStatement pre = db.connect().prepareStatement(sql);
-            pre.setString(1, email);
-            pre.setString(2, Util.MD5(password) );
-            ResultSet rs = pre.executeQuery();
-            status = rs.next();
-            if ( status ) {
-               name = rs.getString("name") + " " + rs.getString("surname");
-               uid = rs.getInt("uid");
+            pre.setString(1,email);
+            pre.setString(2,password);
+            ResultSet rs= pre.executeQuery();
+            status= rs.next();
+            if(status){
+                name = rs.getString("name")+" "+rs.getString("surname");
+                uid =rs.getInt("uid");
             }
+        }catch (Exception ex){
+            System.out.println("login error"+ex);
 
-        }catch (Exception ex) {
-            System.err.println("userLogin Error : " + ex);
         }finally {
             db.close();
-        }
-        return status;
+
+        }return status;
     }
-
-
-
 }

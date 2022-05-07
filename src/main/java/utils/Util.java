@@ -1,10 +1,11 @@
-package utils;
+package Utils;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 public class Util {
 
+    // Email Valid Method
     public static boolean isValidEmailAddress(String email) {
         boolean result = true;
         try {
@@ -13,8 +14,7 @@ public class Util {
         } catch (AddressException ex) {
             result = false;
         }
-        return result;
-    }
+        return result;}
 
     public static String MD5(String md5) {
         try {
@@ -29,6 +29,5 @@ public class Util {
         }
         return null;
     }
-
 
 }
