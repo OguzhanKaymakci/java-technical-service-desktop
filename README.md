@@ -14,12 +14,19 @@ SQLite was used as the database during the design phase. One of the ORM tools, J
 ## Project Overview 
 
 |<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/1.png" width="300">|
+
 |<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/2.png" width="300">|
+
 |<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/3.png" width="300">|
+
 |<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/4.png" width="300">|
+
 |<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/5.png" width="300">|
+
 |<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/6.png" width="300">|
+
 |<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/7.png" width="300">|
+
 
 
 ## Demo Account
