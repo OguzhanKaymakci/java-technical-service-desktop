@@ -11,6 +11,14 @@ SQLite was used as the database during the design phase. One of the ORM tools, J
 <b>Item delivered status 3</b></i></br>
 
 
+## Languages, Technologies and Environments Used in this Project
+| Java/JFrame  | OOP | SQLite | IntelliJ  |
+| :------------: | :------------: | :------------: | :------------: |
+|  <img src ="https://cdn.iconscout.com/icon/free/png-256/java-60-1174953.png" width ="100px" height = "100px" style="float:left" > | <img src ="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQie1pvA8p-kyK_bGjsjPJWv8x4NF9ahNvFA&usqp=CAU" width ="65px" height = "65px" style="float:left " >  |  <img src ="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Sqlite-square-icon.svg/1200px-Sqlite-square-icon.svg.png" width ="65px" height = "65px" style="float:left " > | <img src ="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/IntelliJ_IDEA_Icon.svg/70px-IntelliJ_IDEA_Icon.svg.png" width ="65px" height = "65px" >  |
+
+
+
+
 ## Project Overview 
 
 |<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/1.png" width="300">|
