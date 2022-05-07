@@ -15,23 +15,23 @@ SQLite was used as the database during the design phase. One of the ORM tools, J
 
 |<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/1.png" width="300">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/2.png" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/2.PNG" width="300">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/3.png" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/3.PNG" width="300">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/4.png" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/4.PNG" width="300">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/5.png" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/5.PNG" width="300">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/6.png" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/6.PNG" width="300">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/7.png" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/7.PNG" width="300">|
 
 
 
 ## Demo Account
 
-| <img src ="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/mail.png" width ="20px" height = "20px" style="float:left" > Password | 
+| <img src ="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/mail.png" width ="20px" height = "20px" style="float:left" > password | 
 | :------------: | :------------: | 
 |ok@email.com| 12345 |
 
