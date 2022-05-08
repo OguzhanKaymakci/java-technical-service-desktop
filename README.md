@@ -21,19 +21,19 @@ SQLite was used as the database during the design phase. One of the ORM tools, J
 
 ## Project Overview 
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/1.png" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/1.png" width="600">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/2.PNG" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/2.PNG" width="600">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/3.PNG" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/3.PNG" width="600">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/4.PNG" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/4.PNG" width="600">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/5.PNG" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/5.PNG" width="600">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/6.PNG" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/6.PNG" width="600">|
 
-|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/7.PNG" width="300">|
+|<img src="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/7.PNG" width="600">|
 
 
 
