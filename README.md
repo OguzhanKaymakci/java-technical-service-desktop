@@ -39,11 +39,11 @@ SQLite was used as the database during the design phase. One of the ORM tools, J
 
 ## Demo Account
 
-| <img src ="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/mail.png" width ="20px" height = "20px" style="float:left" > password | 
+| <img src ="https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/mail.png" width ="20px" height = "20px" style="float:left" > Mail | <img src = "https://github.com/OguzhanKaymakci/java-technical-service-desktop/blob/main/images/password.png" width ="20px" height = "20px" style="float:left" > Password
 
 | :------------: | :------------: |
  
-|ok@gmail.com| 12345 |
+|ok@gmail.com    | 12345 |
 
 *Name:* Oğuzhan <br>
 *Surname:* KAYMAKÇI <br>
