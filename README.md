@@ -5,10 +5,7 @@ You can update or delete the information about the product through this system. 
 
 SQLite was used as the database during the design phase. One of the ORM tools, JPA, was used to manage the database. JFrame was used while developing the interface. Java language is used in the back-end part.
 
-<i><b>Item just arrived status 0</b></br>
-<b>The product has been repaired status 1</b></br>
-<b>Product repaired status 2</b></br>
-<b>Item delivered status 3</b></i></br>
+
 
 
 ## Languages, Technologies and Environments Used in this Project
